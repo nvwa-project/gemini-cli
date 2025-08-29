@@ -5,13 +5,12 @@
  */
 
 import OpenAI from 'openai';
-import {
+import type {
   ContentGenerator,
   ContentGeneratorConfig,
 } from './contentGenerator.js';
-import {
+import type {
   CountTokensResponse,
-  GenerateContentResponse,
   GenerateContentParameters,
   CountTokensParameters,
   EmbedContentResponse,
@@ -19,11 +18,15 @@ import {
   Content,
   Part,
   Candidate,
+  ContentUnion,
+} from '@google/genai';
+
+import {
   FinishReason,
+  GenerateContentResponse,
+  GenerateContentResponseUsageMetadata,
   GenerateContentResponsePromptFeedback,
   BlockedReason,
-  GenerateContentResponseUsageMetadata,
-  ContentUnion,
 } from '@google/genai';
 
 interface OpenAIUsage {
