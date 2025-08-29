@@ -120,12 +120,13 @@ export async function createContentGenerator(
   const baseHeaders: Record<string, string> = {
     'User-Agent': userAgent,
   };
+  const httpOptions = { headers: baseHeaders };
 
   if(config.authType === AuthType.OPENAI) {
-    const { createOpenAIContentGenerator: createOpenRouterContentGenerator } = await import(
+    const { createOpenAIContentGenerator } = await import(
       './openaiContentGenerator.js'
     );
-    return createOpenRouterContentGenerator(config, httpOptions);
+    return createOpenAIContentGenerator(config, httpOptions);
   }
 
   if (
