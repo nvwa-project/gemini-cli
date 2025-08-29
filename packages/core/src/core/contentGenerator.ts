@@ -108,6 +108,8 @@ export function createContentGeneratorConfig(
     contentGeneratorConfig.apiKey = openAIApiKey;
     contentGeneratorConfig.proxy = openAIBaseUrl;
     return contentGeneratorConfig;
+  }
+  return contentGeneratorConfig;
 }
 
 export async function createContentGenerator(
