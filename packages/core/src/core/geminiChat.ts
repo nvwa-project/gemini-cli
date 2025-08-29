@@ -561,6 +561,8 @@ export class GeminiChat {
     streamResponse: AsyncGenerator<GenerateContentResponse>,
     userInput: Content,
   ): AsyncGenerator<GenerateContentResponse> {
+
+    console.log(streamResponse)
     const modelResponseParts: Part[] = [];
     let hasReceivedAnyChunk = false;
     let hasToolCall = false;
