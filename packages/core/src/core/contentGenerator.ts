@@ -47,6 +47,7 @@ export enum AuthType {
   USE_GEMINI = 'gemini-api-key',
   USE_VERTEX_AI = 'vertex-ai',
   CLOUD_SHELL = 'cloud-shell',
+  OPENAI = 'openai',
 }
 
 export type ContentGeneratorConfig = {
@@ -65,6 +66,8 @@ export function createContentGeneratorConfig(
   const googleApiKey = process.env['GOOGLE_API_KEY'] || undefined;
   const googleCloudProject = process.env['GOOGLE_CLOUD_PROJECT'] || undefined;
   const googleCloudLocation = process.env['GOOGLE_CLOUD_LOCATION'] || undefined;
+  const openAIApiKey = process.env['OPENAI_API_KEY'] || undefined;
+  const openAIBaseUrl = process.env['OPENAI_BASE_URL'] || undefined;
 
   // Use runtime model from config if available; otherwise, fall back to parameter or default
   const effectiveModel = config.getModel() || DEFAULT_GEMINI_MODEL;
@@ -100,7 +103,11 @@ export function createContentGeneratorConfig(
     return contentGeneratorConfig;
   }
 
-  return contentGeneratorConfig;
+
+  if (authType === AuthType.OPENAI && openAIApiKey) {
+    contentGeneratorConfig.apiKey = openAIApiKey;
+    contentGeneratorConfig.proxy = openAIBaseUrl;
+    return contentGeneratorConfig;
 }
 
 export async function createContentGenerator(
@@ -113,6 +120,13 @@ export async function createContentGenerator(
   const baseHeaders: Record<string, string> = {
     'User-Agent': userAgent,
   };
+
+  if(config.authType === AuthType.OPENAI) {
+    const { createOpenAIContentGenerator: createOpenRouterContentGenerator } = await import(
+      './openaiContentGenerator.js'
+    );
+    return createOpenRouterContentGenerator(config, httpOptions);
+  }
 
   if (
     config.authType === AuthType.LOGIN_WITH_GOOGLE ||
