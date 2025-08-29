@@ -16,7 +16,7 @@ export function validateAuthMethod(authMethod: string): string | null {
     return null;
   }
 
-  if (authMethod === AuthType.USE_GEMINI) {
+  if (authMethod === AuthType.USE_GEMINI || authMethod === AuthType.OPENAI) {
     if (!process.env['GEMINI_API_KEY']) {
       return 'GEMINI_API_KEY environment variable not found. Add that to your environment and try again (no reload needed if using .env)!';
     }
@@ -35,13 +35,6 @@ export function validateAuthMethod(authMethod: string): string | null {
         '• GOOGLE_API_KEY environment variable (if using express mode).\n' +
         'Update your environment and try again (no reload needed if using .env)!'
       );
-    }
-    return null;
-  }
-
-  if (authMethod === AuthType.OPENAI) {
-    if (!process.env['GEMINI_API_KEY']) {
-      return 'GEMINI_API_KEY environment variable not found. Add that to your .env and try again, no reload needed!';
     }
     return null;
   }
