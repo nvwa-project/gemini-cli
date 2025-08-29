@@ -19,6 +19,9 @@ import type {
   Part,
   Candidate,
   ContentUnion,
+  FunctionDeclaration,
+  ToolListUnion, 
+  Tool as GenaiTool,
 } from '@google/genai';
 
 import {
@@ -248,7 +251,7 @@ function convertToOpenAIFormat(
         return {
           role: 'assistant' as const,
           content: null,
-          tool_calls: toolCalls as OpenAI.Chat.ChatCompletionMessageToolCall[],
+          tool_calls: toolCalls as OpenAI.Chat.ChatCompletionMessageFunctionToolCall[],
         };
       }
 
@@ -279,8 +282,6 @@ function convertToOpenAIFormat(
     .flat();
 }
 
-import type { ToolListUnion, Tool as GenaiTool } from '@google/genai';
-
 function convertTools(
   tools?: ToolListUnion,
 ): OpenAI.Chat.ChatCompletionTool[] | undefined {
@@ -297,7 +298,7 @@ function convertTools(
   const functionDeclarations = (firstTool as GenaiTool).functionDeclarations;
   if (!functionDeclarations) return undefined;
 
-  return functionDeclarations.map((func) => ({
+  return functionDeclarations.map((func: FunctionDeclaration) => ({
     type: 'function' as const,
     function: {
       name: func.name || '',
@@ -320,7 +321,8 @@ function convertToGeminiResponse(
   }
 
   if (message.tool_calls) {
-    for (const toolCall of message.tool_calls) {
+    const toolCalls = message.tool_calls as OpenAI.Chat.ChatCompletionMessageFunctionToolCall[];
+    for (const toolCall of toolCalls) {
       if (toolCall.function) {
         parts.push({
           functionCall: {
