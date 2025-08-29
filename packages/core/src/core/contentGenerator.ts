@@ -66,8 +66,6 @@ export function createContentGeneratorConfig(
   const googleApiKey = process.env['GOOGLE_API_KEY'] || undefined;
   const googleCloudProject = process.env['GOOGLE_CLOUD_PROJECT'] || undefined;
   const googleCloudLocation = process.env['GOOGLE_CLOUD_LOCATION'] || undefined;
-  const openAIApiKey = process.env['OPENAI_API_KEY'] || undefined;
-  const openAIBaseUrl = process.env['OPENAI_BASE_URL'] || undefined;
 
   // Use runtime model from config if available; otherwise, fall back to parameter or default
   const effectiveModel = config.getModel() || DEFAULT_GEMINI_MODEL;
@@ -104,9 +102,9 @@ export function createContentGeneratorConfig(
   }
 
 
-  if (authType === AuthType.OPENAI && openAIApiKey) {
-    contentGeneratorConfig.apiKey = openAIApiKey;
-    contentGeneratorConfig.proxy = openAIBaseUrl;
+  if (authType === AuthType.OPENAI) {
+    contentGeneratorConfig.apiKey = geminiApiKey;
+    contentGeneratorConfig.proxy = process.env['GOOGLE_GEMINI_BASE_URL'];
     return contentGeneratorConfig;
   }
   return contentGeneratorConfig;
