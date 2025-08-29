@@ -39,5 +39,12 @@ export function validateAuthMethod(authMethod: string): string | null {
     return null;
   }
 
+  if (authMethod === AuthType.OPENAI) {
+    if (!process.env['GEMINI_API_KEY']) {
+      return 'GEMINI_API_KEY environment variable not found. Add that to your .env and try again, no reload needed!';
+    }
+    return null;
+  }
+
   return 'Invalid auth method selected.';
 }
